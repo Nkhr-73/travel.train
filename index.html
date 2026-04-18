@@ -1,58 +1,83 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>地理院地図 + Leaflet</title>
-
-<!-- Leaflet CSS -->
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
-
+<meta charset="utf-8" />
+<title>駅マップ</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <style>
-body{ margin:0; }
-#map{
-  width:100%;
-  height:100vh;
-}
+  #map { height: 100vh; }
 </style>
 </head>
-
 <body>
 
 <div id="map"></div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-// ===== 地図初期化 =====
-const map = L.map('map').setView([33.59, 130.42], 10); // 博多あたり
 
-// ===== 地理院タイル =====
-L.tileLayer(
-  "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
-  {
-    attribution: "© 国土地理院",
-    maxZoom: 18
-  }
-).addTo(map);
+// 地図
+const map = L.map('map').setView([33.59, 130.42], 10);
 
-// ===== クリックでマーカー追加 =====
-map.on('click', function(e){
-  const lat = e.latlng.lat;
-  const lng = e.latlng.lng;
+// 地理院地図
+L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+  attribution: "地理院地図"
+}).addTo(map);
 
-  L.marker([lat, lng])
-    .addTo(map)
-    .bindPopup(`緯度:${lat.toFixed(4)}<br>経度:${lng.toFixed(4)}`)
-    .openPopup();
-});
-  // ===== 鹿児島本線（門司港〜博多） =====
-const kagoshimaLine = [
-  const stations = [
+// 駅データ
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>駅マップ</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+  #map { height: 100vh; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+
+// 地図
+const map = L.map('map').setView([33.59, 130.42], 10);
+
+// 地理院地図
+L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+  attribution: "地理院地図"
+}).addTo(map);
+
+// 駅データ
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>駅マップ</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+  #map { height: 100vh; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+
+// 地図
+const map = L.map('map').setView([33.59, 130.42], 10);
+
+// 地理院地図
+L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+  attribution: "地理院地図"
+}).addTo(map);
+
+// 駅データ
+const stations = [
+const stations = [
   { name: "門司港", lat: 33.9472, lon: 130.9603 },
   { name: "小森江", lat: 33.9095, lon: 130.9350 },
   { name: "門司", lat: 33.9034, lon: 130.9326 },
@@ -86,18 +111,37 @@ const kagoshimaLine = [
   { name: "吉塚", lat: 33.6022, lon: 130.4383 },
   { name: "博多", lat: 33.5902, lon: 130.4206 }
 ];
-];
-
-// ===== マーカー表示 =====
-kagoshimaLine.forEach(st => {
-  L.marker([st.lat, st.lng])
+// マーカー
+stations.forEach(st => {
+  L.marker([st.lat, st.lon])
     .addTo(map)
     .bindPopup(st.name);
-  L.polyline(
-  kagoshimaLine.map(st => [st.lat, st.lng]),
-  {weight: 4}
-).addTo(map);
 });
+
+</script>
+
+</body>
+</html>
+
+// マーカー
+stations.forEach(st => {
+  L.marker([st.lat, st.lon])
+    .addTo(map)
+    .bindPopup(st.name);
+});
+
+</script>
+
+</body>
+</html>
+
+// マーカー
+stations.forEach(st => {
+  L.marker([st.lat, st.lon])
+    .addTo(map)
+    .bindPopup(st.name);
+});
+
 </script>
 
 </body>
