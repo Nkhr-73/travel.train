@@ -3,185 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>鉄道乗車（福岡）</title>
+<title>日本地図</title>
 
 <style>
 body{
   margin:0;
-  font-family:sans-serif;
-  text-align:center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
   background:#f0f0f0;
 }
 
-#map-container{
-  position:relative;
+img{
   width:90%;
-  max-width:600px;
-  margin:20px auto;
-}
-
-#map{
-  width:100%;
-}
-.station::after{
-  content: attr(data-name);
-  position:absolute;
-  top:12px;
-  left:6px;
-  font-size:10px;
-  opacity:0;
-  transition:0.2s;
-}
-
-.station:hover::after{
-  opacity:1;
-}
-/* 駅 */
-.station{
-  position:absolute;
-  width:10px;
-  height:10px;
-  background:red;
-  border-radius:50%;
-  transform:translate(-50%, -50%);
-  cursor:pointer;
-}
-
-.station.visited{
-  background:green;
-}
-
-#progress{
-  font-size:18px;
-  margin-top:10px;
+  max-width:800px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>鹿児島本線 乗車マップ（門司港〜博多）</h2>
-
-<div id="map-container">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Fukuoka_Prefecture_Map.svg/512px-Fukuoka_Prefecture_Map.svg.png" id="map">
-</div>
-
-<div id="progress">完乗率：0%</div>
-
-<script>
-// ===== 範囲設定（重要）=====
-const bounds = {
-  minLat: 33.55,
-  maxLat: 34.00,
-  minLng: 130.35,
-  maxLng: 131.00
-};
-
-// ===== 駅データ =====
-const stations = [
-  {name:"門司港", lat:33.9450, lng:130.9610},
-  {name:"門司", lat:33.9033, lng:130.9350},
-  {name:"小森江", lat:33.8830, lng:130.9210},
-  {name:"小倉", lat:33.8880, lng:130.8750},
-  {name:"西小倉", lat:33.8835, lng:130.8670},
-  {name:"九州工大前", lat:33.8650, lng:130.8390},
-  {name:"戸畑", lat:33.8500, lng:130.8160},
-  {name:"枝光", lat:33.8430, lng:130.8040},
-  {name:"八幡", lat:33.8360, lng:130.7930},
-  {name:"黒崎", lat:33.8330, lng:130.7630},
-  {name:"陣原", lat:33.8310, lng:130.7450},
-  {name:"折尾", lat:33.8170, lng:130.7120},
-  {name:"水巻", lat:33.8090, lng:130.6850},
-  {name:"遠賀川", lat:33.7930, lng:130.6700},
-  {name:"海老津", lat:33.7660, lng:130.6150},
-  {name:"教育大前", lat:33.7530, lng:130.6020},
-  {name:"赤間", lat:33.7480, lng:130.5860},
-  {name:"東郷", lat:33.7450, lng:130.5550},
-  {name:"東福間", lat:33.7440, lng:130.5300},
-  {name:"福間", lat:33.7420, lng:130.5100},
-  {name:"千鳥", lat:33.7300, lng:130.4800},
-  {name:"古賀", lat:33.7200, lng:130.4600},
-  {name:"新宮中央", lat:33.7050, lng:130.4200},
-  {name:"福工大前", lat:33.7000, lng:130.4100},
-  {name:"九産大前", lat:33.6950, lng:130.4000},
-  {name:"香椎", lat:33.6900, lng:130.4100},
-  {name:"千早", lat:33.6800, lng:130.4200},
-  {name:"箱崎", lat:33.6600, lng:130.4200},
-  {name:"吉塚", lat:33.6400, lng:130.4200},
-  {name:"博多", lat:33.5902, lng:130.4206}
-];
-
-// ===== 変換関数 =====
-function convert(lat, lng){
-  const x = ((lng - bounds.minLng) / (bounds.maxLng - bounds.minLng)) * 100;
-  const y = ((bounds.maxLat - lat) / (bounds.maxLat - bounds.minLat)) * 100;
-  return {x, y};
-}
-
-// ===== 記録 =====
-let visited = new Set();
-
-// ロード
-function load(){
-  const data = JSON.parse(localStorage.getItem("stations") || "[]");
-  visited = new Set(data);
-
-  document.querySelectorAll(".station").forEach(el=>{
-    if(visited.has(el.dataset.name)){
-      el.classList.add("visited");
-    }
-  });
-
-  update();
-}
-
-// セーブ
-function save(){
-  localStorage.setItem("stations", JSON.stringify([...visited]));
-}
-
-// 更新
-function update(){
-  const percent = ((visited.size / stations.length) * 100).toFixed(1);
-  document.getElementById("progress").textContent = "完乗率：" + percent + "%";
-}
-
-// クリック処理
-function toggleStation(el){
-  const name = el.dataset.name;
-
-  if(visited.has(name)){
-    visited.delete(name);
-    el.classList.remove("visited");
-  }else{
-    visited.add(name);
-    el.classList.add("visited");
-  }
-
-  update();
-  save();
-}
-
-// ===== 自動配置 =====
-const container = document.getElementById("map-container");
-
-stations.forEach(st=>{
-  const pos = convert(st.lat, st.lng);
-
-  const el = document.createElement("div");
-  el.className = "station";
-  el.style.left = pos.x + "%";
-  el.style.top = pos.y + "%";
-  el.dataset.name = st.name;
-
-  el.onclick = ()=>toggleStation(el);
-
-  container.appendChild(el);
-});
-
-// 初期化
-load();
-</script>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Japan_map_blank.png/800px-Japan_map_blank.png">
 
 </body>
 </html>
