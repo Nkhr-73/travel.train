@@ -89,6 +89,10 @@ kagoshimaLine.forEach(st => {
   L.marker([st.lat, st.lng])
     .addTo(map)
     .bindPopup(st.name);
+  L.polyline(
+  kagoshimaLine.map(st => [st.lat, st.lng]),
+  {weight: 4}
+).addTo(map);
 });
 </script>
 
