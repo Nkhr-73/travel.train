@@ -50,6 +50,46 @@ map.on('click', function(e){
     .bindPopup(`緯度:${lat.toFixed(4)}<br>経度:${lng.toFixed(4)}`)
     .openPopup();
 });
+  // ===== 鹿児島本線（門司港〜博多） =====
+const kagoshimaLine = [
+  {name:"門司港", lat:33.9450, lng:130.9610},
+  {name:"門司", lat:33.9033, lng:130.9350},
+  {name:"小森江", lat:33.8830, lng:130.9210},
+  {name:"小倉", lat:33.8880, lng:130.8750},
+  {name:"西小倉", lat:33.8835, lng:130.8670},
+  {name:"九州工大前", lat:33.8650, lng:130.8390},
+  {name:"戸畑", lat:33.8500, lng:130.8160},
+  {name:"枝光", lat:33.8430, lng:130.8040},
+  {name:"八幡", lat:33.8360, lng:130.7930},
+  {name:"黒崎", lat:33.8330, lng:130.7630},
+  {name:"陣原", lat:33.8310, lng:130.7450},
+  {name:"折尾", lat:33.8170, lng:130.7120},
+  {name:"水巻", lat:33.8090, lng:130.6850},
+  {name:"遠賀川", lat:33.7930, lng:130.6700},
+  {name:"海老津", lat:33.7660, lng:130.6150},
+  {name:"教育大前", lat:33.7530, lng:130.6020},
+  {name:"赤間", lat:33.7480, lng:130.5860},
+  {name:"東郷", lat:33.7450, lng:130.5550},
+  {name:"東福間", lat:33.7440, lng:130.5300},
+  {name:"福間", lat:33.7420, lng:130.5100},
+  {name:"千鳥", lat:33.7300, lng:130.4800},
+  {name:"古賀", lat:33.7200, lng:130.4600},
+  {name:"新宮中央", lat:33.7050, lng:130.4200},
+  {name:"福工大前", lat:33.7000, lng:130.4100},
+  {name:"九産大前", lat:33.6950, lng:130.4000},
+  {name:"香椎", lat:33.6900, lng:130.4100},
+  {name:"千早", lat:33.6800, lng:130.4200},
+  {name:"箱崎", lat:33.6600, lng:130.4200},
+  {name:"吉塚", lat:33.6400, lng:130.4200},
+  {name:"博多", lat:33.5902, lng:130.4206}
+];
+
+// ===== マーカー表示 =====
+kagoshimaLine.forEach(st => {
+  L.marker([st.lat, st.lng])
+    .addTo(map)
+    .bindPopup(st.name);
+});
 </script>
 
 </body>
