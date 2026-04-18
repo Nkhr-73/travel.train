@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>鉄道乗車記録マップ</title>
+<title>鉄道乗車マップ</title>
 
 <style>
 body{
@@ -36,6 +36,7 @@ header{
   box-shadow:2px 0 5px rgba(0,0,0,0.3);
   transition:0.3s;
   padding:20px;
+  overflow:auto;
 }
 
 #sidebar.open{
@@ -53,7 +54,7 @@ header{
 /* 地図 */
 svg{
   width:90%;
-  max-width:600px;
+  max-width:700px;
 }
 
 .pref{
@@ -65,6 +66,10 @@ svg{
 .pref.visited{
   fill:#4caf50;
 }
+
+.progress{
+  margin-top:20px;
+}
 </style>
 </head>
 
@@ -74,71 +79,41 @@ svg{
   <div class="menu-btn" onclick="toggleMenu()">≡</div>
   <h2>鉄道乗車マップ</h2>
 </header>
-  
-<div class="progress">
-  <h4>都道府県完乗率</h4>
-  <p id="prefProgress">0%</p>
-</div>
-  
+
 <div id="sidebar">
-  <h3>乗車記録入力</h3>
-  <input id="lineInput" placeholder="例：山手線">
-  <input id="sectionInput" placeholder="例：新宿〜渋谷">
-  <button onclick="addRecord()">記録する</button>
+  <h3>都道府県完乗率</h3>
+  <p id="prefProgress">0%</p>
 </div>
 
 <div id="map">
 
-<!-- 超簡易 日本地図（テスト用） -->
-<svg viewBox="0 0 200 200">
+<!-- 安定して動く日本地図（簡略版） -->
+<svg viewBox="0 0 300 200">
 
-  <!-- 福岡 -->
-  <rect id="fukuoka" class="pref" x="20" y="120" width="30" height="20"/>
-
-  <!-- 東京 -->
-  <rect id="tokyo" class="pref" x="140" y="100" width="20" height="20"/>
-
-  <!-- 大阪 -->
-  <rect id="osaka" class="pref" x="100" y="110" width="25" height="20"/>
+  <rect id="fukuoka" class="pref" x="20" y="120" width="40" height="25"/>
+  <rect id="osaka" class="pref" x="120" y="110" width="40" height="25"/>
+  <rect id="tokyo" class="pref" x="220" y="100" width="40" height="25"/>
+  <rect id="hokkaido" class="pref" x="180" y="20" width="60" height="40"/>
 
 </svg>
 
 </div>
 
 <script>
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("open");
+}
+
+// ===== 完乗率ロジック =====
 const TOTAL_PREF = 47;
 let visitedPrefs = new Set();
 
-document.querySelectorAll(".pref").forEach(pref => {
-  pref.addEventListener("click", () => {
-
-    const id = pref.id;
-
-    if (visitedPrefs.has(id)) {
-      visitedPrefs.delete(id);
-      pref.classList.remove("visited");
-    } else {
-      visitedPrefs.add(id);
-      pref.classList.add("visited");
-    }
-
-    updateProgress();
-  });
-});
-
-function updateProgress(){
-  const percent = ((visitedPrefs.size / TOTAL_PREF) * 100).toFixed(1);
-  document.getElementById("prefProgress").textContent = percent + "%";
-}
-  function saveData(){
-  localStorage.setItem("visitedPrefs", JSON.stringify([...visitedPrefs]));
-}
-
+// ロード
 function loadData(){
-  const data = JSON.parse(localStorage.getItem("visitedPrefs") || "[]");
-  visitedPrefs = new Set(data);
+  const saved = JSON.parse(localStorage.getItem("visitedPrefs") || "[]");
+  visitedPrefs = new Set(saved);
 
-  visitedPrefs.forEach(id => {
+  visitedPrefs.forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.classList.add("visited");
   });
@@ -146,9 +121,37 @@ function loadData(){
   updateProgress();
 }
 
-// ページ読み込み時
+// セーブ
+function saveData(){
+  localStorage.setItem("visitedPrefs", JSON.stringify([...visitedPrefs]));
+}
+
+// 更新
+function updateProgress(){
+  const percent = ((visitedPrefs.size / TOTAL_PREF) * 100).toFixed(1);
+  document.getElementById("prefProgress").textContent = percent + "%";
+}
+
+// クリック処理
+document.querySelectorAll(".pref").forEach(pref=>{
+  pref.addEventListener("click", ()=>{
+    const id = pref.id;
+
+    if(visitedPrefs.has(id)){
+      visitedPrefs.delete(id);
+      pref.classList.remove("visited");
+    }else{
+      visitedPrefs.add(id);
+      pref.classList.add("visited");
+    }
+
+    updateProgress();
+    saveData();
+  });
+});
+
+// 初期化
 loadData();
-  saveData();
 </script>
 
 </body>
