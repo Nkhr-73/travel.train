@@ -12,7 +12,6 @@ body{
   background:#f0f0f0;
 }
 
-/* ヘッダー */
 header{
   background:#222;
   color:white;
@@ -27,7 +26,6 @@ header{
   margin-right:10px;
 }
 
-/* サイドメニュー */
 #sidebar{
   position:fixed;
   top:0;
@@ -38,34 +36,34 @@ header{
   box-shadow:2px 0 5px rgba(0,0,0,0.3);
   transition:0.3s;
   padding:20px;
-  overflow:auto;
 }
 
 #sidebar.open{
   left:0;
 }
 
-/* 地図エリア */
 #map{
   width:100%;
   height:90vh;
-  background:#ddd;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
 }
 
-/* 入力フォーム */
-input, button{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  font-size:14px;
+/* 地図 */
+svg{
+  width:90%;
+  max-width:600px;
 }
 
-.progress{
-  margin-top:20px;
-  font-size:14px;
+.pref{
+  fill:#ccc;
+  stroke:#333;
+  cursor:pointer;
+}
+
+.pref.visited{
+  fill:#4caf50;
 }
 </style>
 </head>
@@ -77,25 +75,29 @@ input, button{
   <h2>鉄道乗車マップ</h2>
 </header>
 
-<!-- サイドバー -->
 <div id="sidebar">
   <h3>乗車記録入力</h3>
-
   <input id="lineInput" placeholder="例：山手線">
   <input id="sectionInput" placeholder="例：新宿〜渋谷">
-
   <button onclick="addRecord()">記録する</button>
-
-  <div class="progress">
-    <h4>完乗率（仮）</h4>
-    <p>路線：--%</p>
-    <p>都道府県：--%</p>
-  </div>
 </div>
 
-<!-- 地図 -->
 <div id="map">
-  <p>ここに日本地図を表示（後で実装）</p>
+
+<!-- 超簡易 日本地図（テスト用） -->
+<svg viewBox="0 0 200 200">
+
+  <!-- 福岡 -->
+  <rect id="fukuoka" class="pref" x="20" y="120" width="30" height="20"/>
+
+  <!-- 東京 -->
+  <rect id="tokyo" class="pref" x="140" y="100" width="20" height="20"/>
+
+  <!-- 大阪 -->
+  <rect id="osaka" class="pref" x="100" y="110" width="25" height="20"/>
+
+</svg>
+
 </div>
 
 <script>
@@ -103,7 +105,14 @@ function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("open");
 }
 
-// 仮のデータ保存
+// 都道府県クリックで色変更
+document.querySelectorAll(".pref").forEach(pref => {
+  pref.addEventListener("click", () => {
+    pref.classList.toggle("visited");
+  });
+});
+
+// 仮データ
 let records = [];
 
 function addRecord(){
@@ -116,9 +125,7 @@ function addRecord(){
   }
 
   records.push({line, section});
-  alert(line + " " + section + " を記録した");
-
-  console.log(records);
+  alert("記録した！");
 }
 </script>
 
