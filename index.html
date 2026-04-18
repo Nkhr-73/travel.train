@@ -69,6 +69,8 @@ stations.forEach(st => {
     .addTo(map)
     .bindPopup(st.name);
 });
+  const latlngs = stations.map(st => [st.lat, st.lon]);
+L.polyline(latlngs).addTo(map);
 
 </script>
 
