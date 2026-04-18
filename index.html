@@ -74,7 +74,12 @@ svg{
   <div class="menu-btn" onclick="toggleMenu()">≡</div>
   <h2>鉄道乗車マップ</h2>
 </header>
-
+  
+<div class="progress">
+  <h4>都道府県完乗率</h4>
+  <p id="prefProgress">0%</p>
+</div>
+  
 <div id="sidebar">
   <h3>乗車記録入力</h3>
   <input id="lineInput" placeholder="例：山手線">
@@ -101,32 +106,49 @@ svg{
 </div>
 
 <script>
-function toggleMenu(){
-  document.getElementById("sidebar").classList.toggle("open");
-}
+const TOTAL_PREF = 47;
+let visitedPrefs = new Set();
 
-// 都道府県クリックで色変更
 document.querySelectorAll(".pref").forEach(pref => {
   pref.addEventListener("click", () => {
-    pref.classList.toggle("visited");
+
+    const id = pref.id;
+
+    if (visitedPrefs.has(id)) {
+      visitedPrefs.delete(id);
+      pref.classList.remove("visited");
+    } else {
+      visitedPrefs.add(id);
+      pref.classList.add("visited");
+    }
+
+    updateProgress();
   });
 });
 
-// 仮データ
-let records = [];
-
-function addRecord(){
-  const line = document.getElementById("lineInput").value;
-  const section = document.getElementById("sectionInput").value;
-
-  if(!line || !section){
-    alert("ちゃんと入力してくれ笑");
-    return;
-  }
-
-  records.push({line, section});
-  alert("記録した！");
+function updateProgress(){
+  const percent = ((visitedPrefs.size / TOTAL_PREF) * 100).toFixed(1);
+  document.getElementById("prefProgress").textContent = percent + "%";
 }
+  function saveData(){
+  localStorage.setItem("visitedPrefs", JSON.stringify([...visitedPrefs]));
+}
+
+function loadData(){
+  const data = JSON.parse(localStorage.getItem("visitedPrefs") || "[]");
+  visitedPrefs = new Set(data);
+
+  visitedPrefs.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.add("visited");
+  });
+
+  updateProgress();
+}
+
+// ページ読み込み時
+loadData();
+  saveData();
 </script>
 
 </body>
