@@ -23,7 +23,19 @@ body{
 #map{
   width:100%;
 }
+.station::after{
+  content: attr(data-name);
+  position:absolute;
+  top:12px;
+  left:6px;
+  font-size:10px;
+  opacity:0;
+  transition:0.2s;
+}
 
+.station:hover::after{
+  opacity:1;
+}
 /* 駅 */
 .station{
   position:absolute;
