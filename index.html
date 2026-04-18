@@ -2,29 +2,25 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>日本地図</title>
+<title>地理院地図</title>
 
 <style>
 body{
   margin:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  background:#f0f0f0;
 }
-
-img{
-  width:90%;
-  max-width:800px;
+iframe{
+  width:100%;
+  height:100vh;
+  border:none;
 }
 </style>
 </head>
 
 <body>
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Japan_map_blank.png/800px-Japan_map_blank.png">
+<iframe 
+  src="https://maps.gsi.go.jp/#5/36.000/138.000/&base=std&ls=std&disp=1">
+</iframe>
 
 </body>
 </html>
