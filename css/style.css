@@ -343,3 +343,55 @@ body {
     padding: 8px;
   }
 }
+/* 路線一覧 */
+
+.route-section {
+  margin-top: 24px;
+}
+
+.route-note {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 14px;
+}
+
+#routeList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.route-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px;
+  border-radius: 10px;
+
+  background: #1e293b;
+  cursor: pointer;
+
+  transition: background 0.2s;
+}
+
+.route-item:hover {
+  background: #334155;
+}
+
+.route-item input {
+  accent-color: #60a5fa;
+  cursor: pointer;
+}
+
+.route-color {
+  width: 18px;
+  height: 5px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.route-name {
+  font-size: 13px;
+  color: #e2e8f0;
+}
