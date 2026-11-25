@@ -1,5 +1,5 @@
 // 糸島市周辺の地図
-const map = L.map("map").setView([33.557, 130.201], 12);
+const map = L.map("map").setView([33.522, 130.190], 12);
 
 // OpenStreetMap
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
