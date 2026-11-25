@@ -1,80 +1,107 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<meta charset="utf-8" />
-<title>駅マップ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BusMap Itoshima</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="css/style.css">
 
-<style>
-  html, body { margin: 0; padding: 0; }
-  #map { height: 100vh; }
-</style>
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 </head>
 
 <body>
 
-<div id="map"></div>
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">🚌</div>
+      <div>
+        <h1>BusMap <span>Itoshima</span></h1>
+        <p>ITOSHIMA BUS NETWORK</p>
+      </div>
+    </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
+    <div class="header-status">
+      <span class="status-dot"></span>
+      MAP SYSTEM
+    </div>
+  </header>
 
-// 地図
-const map = L.map('map').setView([33.7, 130.6], 10);
+  <main class="main-container">
 
-// 地理院地図
-L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-  attribution: "地理院地図"
-}).addTo(map);
+    <aside class="sidebar">
 
-// 駅データ
-const stations = [
-const stations = [
-  { name: "門司港", lat: 33.947196, lon: 130.960338 },
-  { name: "小森江", lat: 33.909607, lon: 130.935184 },
-  { name: "門司", lat: 33.903281, lon: 130.932473 },
-  { name: "小倉", lat: 33.883356, lon: 130.882778 },
-  { name: "西小倉", lat: 33.883052, lon: 130.872709 },
-  { name: "九州工大前", lat: 33.863552, lon: 130.841126 },
-  { name: "戸畑", lat: 33.857226, lon: 130.827643 },
-  { name: "枝光", lat: 33.846452, lon: 130.810410 },
-  { name: "スペースワールド", lat: 33.838984, lon: 130.799451 },
-  { name: "八幡", lat: 33.845781, lon: 130.768847 },
-  { name: "黒崎", lat: 33.852236, lon: 130.765202 },
-  { name: "陣原", lat: 33.850271, lon: 130.740290 },
-  { name: "折尾", lat: 33.862563, lon: 130.711458 },
-  { name: "水巻", lat: 33.860056, lon: 130.678285 },
-  { name: "遠賀川", lat: 33.847659, lon: 130.654491 },
-  { name: "海老津", lat: 33.820602, lon: 130.620782 },
-  { name: "教育大前", lat: 33.794635, lon: 130.600994 },
-  { name: "赤間", lat: 33.785323, lon: 130.580304 },
-  { name: "東郷", lat: 33.799027, lon: 130.558266 },
-  { name: "東福間", lat: 33.788294, lon: 130.532998 },
-  { name: "福間", lat: 33.777216, lon: 130.510197 },
-  { name: "千鳥", lat: 33.763823, lon: 130.487407 },
-  { name: "古賀", lat: 33.757206, lon: 130.468042 },
-  { name: "ししぶ", lat: 33.739534, lon: 130.447793 },
-  { name: "新宮中央", lat: 33.716317, lon: 130.446094 },
-  { name: "福工大前", lat: 33.708296, lon: 130.438964 },
-  { name: "九産大前", lat: 33.694627, lon: 130.426838 },
-  { name: "香椎", lat: 33.668709, lon: 130.431285 },
-  { name: "千早", lat: 33.649777, lon: 130.430502 },
-  { name: "箱崎", lat: 33.623212, lon: 130.433028 },
-  { name: "吉塚", lat: 33.602214, lon: 130.438289 },
-  { name: "博多", lat: 33.590190, lon: 130.420685 }
-];
-];
+      <section class="welcome">
+        <p class="eyebrow">WELCOME</p>
+        <h2>糸島のバスを、<br>ひとつの地図に。</h2>
+        <p class="description">
+          糸島市内を走るバスの運行状況を
+          地図上で確認できる交通マップ。
+        </p>
+      </section>
 
-// マーカー
-stations.forEach(st => {
-  L.marker([st.lat, st.lon])
-    .addTo(map)
-    .bindPopup(st.name);
-});
-  const latlngs = stations.map(st => [st.lat, st.lon]);
-L.polyline(latlngs).addTo(map);
+      <section class="info-card">
+        <p class="card-label">CURRENT MAP</p>
+        <h3>糸島市周辺</h3>
+        <p>Fukuoka, Japan</p>
+        <div class="map-status">
+          <span></span>
+          地図システム稼働中
+        </div>
+      </section>
 
-</script>
+      <section class="route-section">
+        <div class="section-heading">
+          <h3>路線一覧</h3>
+          <span>PHASE 2</span>
+        </div>
+
+        <div class="empty-state">
+          <span>🚏</span>
+          <p>路線データは準備中です。</p>
+          <small>次の開発段階で追加します。</small>
+        </div>
+      </section>
+
+      <div class="sidebar-footer">
+        <p>BusMap Itoshima</p>
+        <small>VERSION 1.0.0</small>
+      </div>
+
+    </aside>
+
+    <section class="map-container">
+      <div class="map-top">
+        <div>
+          <span class="map-label">LIVE MAP</span>
+          <h2>糸島市 バス運行マップ</h2>
+        </div>
+        <button id="resetMap" class="reset-button">
+          ↗ 初期位置に戻る
+        </button>
+      </div>
+
+      <div id="map"></div>
+
+      <div class="map-footer">
+        <span>© OpenStreetMap contributors</span>
+        <span>BUSMAP ITOSHIMA</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
+
+  <script src="js/map.js"></script>
 
 </body>
 </html>
