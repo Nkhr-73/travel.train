@@ -1,27 +1,73 @@
-// 糸島市周辺の地図
-const map = L.map("map").setView([33.522, 130.190], 12);
 
-// OpenStreetMap
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+"use strict";
+
+// =====================================
+// BusMap Itoshima
+// 白糸線マップ
+// =====================================
 
 
-// ==============================
-// サンプル路線データ
-// ※動作確認用の仮データ
-// ==============================
+// -------------------------------------
+// 1. 地図の基本設定
+// -------------------------------------
 
-const routes = [
-// ==============================
-// 白糸線 路線データ
-// ==============================
+const INITIAL_CENTER = [33.522, 130.190];
+const INITIAL_ZOOM = 12;
+
+const mapElement = document.getElementById("map");
+const routeListElement = document.getElementById("routeList");
+const resetButton = document.getElementById("resetMap");
+
+
+// 地図のエラーを表示する
+function showMapError(message) {
+  console.error("[BusMap]", message);
+
+  if (mapElement) {
+    mapElement.innerHTML = `
+      <div style="
+        padding: 24px;
+        color: #b91c1c;
+        background: #fee2e2;
+        border-radius: 12px;
+        margin: 16px;
+      ">
+        <strong>地図を読み込めませんでした</strong>
+        <p>${message}</p>
+      </div>
+    `;
+  }
+}
+
+
+// 必要なHTML要素があるか確認
+if (!mapElement) {
+  console.error("HTMLに id='map' が見つかりません。");
+}
+
+if (!routeListElement) {
+  console.error("HTMLに id='routeList' が見つかりません。");
+}
+
+
+// Leafletが読み込まれているか確認
+if (typeof L === "undefined") {
+  showMapError(
+    "Leafletが読み込まれていません。index.htmlのLeaflet JSを確認してください。"
+  );
+}
+
+
+// -------------------------------------
+// 2. 白糸線データ
+// -------------------------------------
 
 const routes = [
   {
     id: "shiraito",
     name: "白糸線",
     color: "#2563eb",
+
     stops: [
       {
         name: "前原駅南口",
@@ -111,61 +157,77 @@ const routes = [
     ]
   }
 ];
-    ]
-  },
-  {
-    id: "route2",
-    name: "サンプル路線 B",
-    color: "#f97316",
-    stops: [
+
+
+// -------------------------------------
+// 3. 地図を初期化
+// -------------------------------------
+
+let map = null;
+
+if (typeof L !== "undefined" && mapElement) {
+  try {
+    map = L.map(mapElement, {
+      zoomControl: true,
+      scrollWheelZoom: true
+    });
+
+    map.setView(INITIAL_CENTER, INITIAL_ZOOM);
+
+    // OpenStreetMap
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
-        name: "サンプルバス停 4",
-        lat: 33.557,
-        lng: 130.201
-      },
-      {
-        name: "サンプルバス停 5",
-        lat: 33.545,
-        lng: 130.215
-      },
-      {
-        name: "サンプルバス停 6",
-        lat: 33.535,
-        lng: 130.230
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
       }
-    ]
+    ).addTo(map);
+
+  } catch (error) {
+    showMapError("地図の初期化中にエラーが発生しました。");
+    console.error(error);
   }
-];
+}
 
 
-// 路線ごとの表示レイヤー
+// -------------------------------------
+// 4. 路線の表示管理
+// -------------------------------------
+
 const routeLayers = {};
 
 
-// ==============================
-// 路線を地図に追加
-// ==============================
+// -------------------------------------
+// 5. 路線を地図に追加
+// -------------------------------------
 
 function createRoute(route) {
+  if (!map) return;
+
   const layerGroup = L.layerGroup();
 
-  // 路線の線
+  // バス停の座標を路線の線にする
   const coordinates = route.stops.map(stop => [
     stop.lat,
     stop.lng
   ]);
 
+  // 路線の線
   const line = L.polyline(coordinates, {
     color: route.color,
     weight: 5,
-    opacity: 0.85
+    opacity: 0.85,
+    lineCap: "round",
+    lineJoin: "round"
   });
+
+  line.bindTooltip(route.name);
 
   layerGroup.addLayer(line);
 
 
   // バス停マーカー
-  route.stops.forEach(stop => {
+  route.stops.forEach((stop, index) => {
     const marker = L.circleMarker(
       [stop.lat, stop.lng],
       {
@@ -177,31 +239,34 @@ function createRoute(route) {
       }
     );
 
-    marker.bindTooltip(stop.name);
+    marker.bindTooltip(
+      `${index + 1}. ${stop.name}`,
+      {
+        direction: "top",
+        offset: [0, -6]
+      }
+    );
 
     layerGroup.addLayer(marker);
   });
 
+
+  // 路線を保存
   routeLayers[route.id] = layerGroup;
 
-  // 最初は表示する
+  // 最初は表示
   layerGroup.addTo(map);
 }
 
 
-// ==============================
-// 路線一覧を作成
-// ==============================
+// -------------------------------------
+// 6. 路線一覧を作成
+// -------------------------------------
 
 function createRouteList() {
-  const routeList = document.getElementById("routeList");
+  if (!routeListElement) return;
 
-  if (!routeList) {
-    console.error("routeList が見つかりません");
-    return;
-  }
-
-  routeList.innerHTML = "";
+  routeListElement.innerHTML = "";
 
   routes.forEach(route => {
     const item = document.createElement("label");
@@ -212,46 +277,122 @@ function createRouteList() {
     checkbox.checked = true;
 
     checkbox.addEventListener("change", () => {
+      const layer = routeLayers[route.id];
+
+      if (!layer || !map) return;
+
       if (checkbox.checked) {
-        routeLayers[route.id].addTo(map);
+        layer.addTo(map);
       } else {
-        map.removeLayer(routeLayers[route.id]);
+        map.removeLayer(layer);
       }
     });
 
+
+    // 路線カラー
     const color = document.createElement("span");
     color.className = "route-color";
     color.style.backgroundColor = route.color;
 
+
+    // 路線名
     const name = document.createElement("span");
     name.className = "route-name";
     name.textContent = route.name;
+
 
     item.appendChild(checkbox);
     item.appendChild(color);
     item.appendChild(name);
 
-    routeList.appendChild(item);
+    routeListElement.appendChild(item);
   });
 }
 
 
-// ==============================
-// 初期化
-// ==============================
+// -------------------------------------
+// 7. 路線全体が見えるようにする
+// -------------------------------------
 
-routes.forEach(createRoute);
-createRouteList();
+function fitRouteBounds() {
+  if (!map) return;
+
+  const allCoordinates = [];
+
+  routes.forEach(route => {
+    route.stops.forEach(stop => {
+      allCoordinates.push([
+        stop.lat,
+        stop.lng
+      ]);
+    });
+  });
+
+  if (allCoordinates.length === 0) return;
+
+  const bounds = L.latLngBounds(allCoordinates);
+
+  map.fitBounds(bounds, {
+    padding: [40, 40],
+    maxZoom: 14
+  });
+}
 
 
-// ==============================
-// 初期位置に戻るボタン
-// ==============================
-
-const resetButton = document.getElementById("resetMap");
+// -------------------------------------
+// 8. 初期位置に戻るボタン
+// -------------------------------------
 
 if (resetButton) {
   resetButton.addEventListener("click", () => {
-    map.setView([33.557, 130.201], 12);
+    fitRouteBounds();
   });
+}
+
+
+// -------------------------------------
+// 9. 地図サイズの調整
+// -------------------------------------
+
+function refreshMapSize() {
+  if (!map) return;
+
+  map.invalidateSize({
+    pan: false
+  });
+}
+
+
+// 地図を描画したあとにサイズを再計算
+if (map) {
+  requestAnimationFrame(() => {
+    refreshMapSize();
+    fitRouteBounds();
+  });
+
+  // ウィンドウサイズ変更に対応
+  window.addEventListener("resize", refreshMapSize);
+
+  // 地図エリア自体のサイズ変更にも対応
+  if (typeof ResizeObserver !== "undefined") {
+    const mapResizeObserver = new ResizeObserver(() => {
+      refreshMapSize();
+    });
+
+    mapResizeObserver.observe(mapElement);
+  }
+}
+
+
+// -------------------------------------
+// 10. 初期化
+// -------------------------------------
+
+if (map) {
+  routes.forEach(createRoute);
+  createRouteList();
+
+  console.log("BusMap Itoshima: 地図を初期化しました");
+  console.log("登録路線数:", routes.length);
+  console.log("白糸線バス停数:", routes[0].stops.length);
 }
