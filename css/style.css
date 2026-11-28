@@ -395,3 +395,21 @@ body {
   font-size: 13px;
   color: #e2e8f0;
 }
+
+/* Leaflet map display fix */
+#map {
+  width: 100%;
+  height: calc(100vh - 220px);
+  min-height: 450px;
+}
+
+.map-container {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  #map {
+    height: 60vh;
+    min-height: 350px;
+  }
+}
