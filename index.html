@@ -4,22 +4,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>BusMap Itoshima</title>
 
+  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- Leaflet -->
+  <!-- Leaflet CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  >
 </head>
 
 <body>
 
+  <!-- =========================
+       ヘッダー
+  ========================== -->
   <header class="header">
     <div class="brand">
       <div class="brand-icon">🚌</div>
+
       <div>
         <h1>BusMap <span>Itoshima</span></h1>
         <p>ITOSHIMA BUS NETWORK</p>
@@ -32,46 +38,64 @@
     </div>
   </header>
 
+
+  <!-- =========================
+       メインコンテンツ
+  ========================== -->
   <main class="main-container">
 
+    <!-- サイドバー -->
     <aside class="sidebar">
 
+      <!-- ウェルカム -->
       <section class="welcome">
         <p class="eyebrow">WELCOME</p>
-        <h2>糸島のバスを、<br>ひとつの地図に。</h2>
+
+        <h2>
+          糸島のバスを、<br>
+          ひとつの地図に。
+        </h2>
+
         <p class="description">
           糸島市内を走るバスの運行状況を
           地図上で確認できる交通マップ。
         </p>
       </section>
 
+
+      <!-- 地図情報 -->
       <section class="info-card">
         <p class="card-label">CURRENT MAP</p>
+
         <h3>糸島市周辺</h3>
         <p>Fukuoka, Japan</p>
+
         <div class="map-status">
           <span></span>
           地図システム稼働中
         </div>
       </section>
 
+
+      <!-- 路線一覧 -->
       <section class="route-section">
+
         <div class="section-heading">
           <h3>路線一覧</h3>
           <span>PHASE 2</span>
         </div>
 
-        <div class="empty-state">
-          <span>🚏</span>
-        <div class="route-section">
-  <h3>路線一覧</h3>
-  <p class="route-note">路線を選ぶと地図に表示されます</p>
+        <p class="route-note">
+          路線を選ぶと地図に表示されます
+        </p>
 
-  <div id="routeList"></div>
-</div>
-        
+        <!-- JavaScriptで路線一覧を生成 -->
+        <div id="routeList"></div>
+
       </section>
 
+
+      <!-- サイドバーフッター -->
       <div class="sidebar-footer">
         <p>BusMap Itoshima</p>
         <small>VERSION 1.0.0</small>
@@ -79,32 +103,48 @@
 
     </aside>
 
+
+    <!-- =========================
+         地図エリア
+    ========================== -->
     <section class="map-container">
+
+      <!-- 地図上部 -->
       <div class="map-top">
         <div>
           <span class="map-label">LIVE MAP</span>
           <h2>糸島市 バス運行マップ</h2>
         </div>
+
         <button id="resetMap" class="reset-button">
           ↗ 初期位置に戻る
         </button>
       </div>
 
+
+      <!-- Leaflet地図 -->
       <div id="map"></div>
 
+
+      <!-- 地図下部 -->
       <div class="map-footer">
         <span>© OpenStreetMap contributors</span>
         <span>BUSMAP ITOSHIMA</span>
       </div>
+
     </section>
 
   </main>
 
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-  </script>
 
+  <!-- =========================
+       JavaScript
+  ========================== -->
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- BusMap本体 -->
   <script src="js/map.js"></script>
 
 </body>
